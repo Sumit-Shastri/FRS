@@ -1,10 +1,10 @@
 import pandas
 import glob
 
-model_collateral = pandas.read_csv(r"E:\lending-club-data\model_collateral.csv")
+model_collateral_df = pandas.read_csv(r"E:\lending-club-data\model_collateral.csv")
 #print(model_collateral)
 
-model_config = pandas.read_csv(r"E:\lending-club-data\model_config.csv")
+model_config_df = pandas.read_csv(r"E:\lending-club-data\model_config.csv")
 #print(model_config)
 
 csv_files = glob.glob(r"E:\lending-club-data\model_auth_Rep/*.csv")
