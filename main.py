@@ -2,6 +2,7 @@ import pandas
 import glob
 import duckdb
 from typing import Optional, List, Tuple, Dict, Union
+import openpyxl
 
 from PIL.ImageChops import duplicate
 from pandas import isnull
@@ -89,3 +90,9 @@ joined_config_N_collateral = duckdb.query("select a.id,a.Opening_PD12,a.Opening_
 joined_collateral_N_authReop = duckdb.query("select a.id,a.loan_amnt ,a.term, b.PD12 , b.PDLT , b.EAD , b.LGD from model_collateral_df a , combined_model_auth_rep b where a.id = b.id")
 #print(joined_collateral_N_authReop)
 
+stageCalculations = duckdb.query("SELECT id, EAD , PD12 , PDLT, LGD, EAD*PD12*LGD AS Stage_1 , EAD*PDLT*LGD AS Stage_2 , EAD*LGD AS Stage_3 from combined_model_auth_rep").df()
+#print(stageCalculations)
+
+outputFile = "E:\\lending-club-data\\newStage.xlsx"
+stageCalculations.to_excel(outputFile,index = False , engine = "openpyxl")
+print(f"Excel file saved successfully as '{outputFile}'!")
