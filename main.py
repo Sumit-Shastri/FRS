@@ -1,6 +1,11 @@
 import pandas
 import glob
+import duckdb
 from typing import Optional, List, Tuple, Dict, Union
+
+from PIL.ImageChops import duplicate
+from pandas import isnull
+
 model_collateral_df = pandas.read_csv(r"E:\lending-club-data\model_collateral.csv")
 #print(model_collateral)
 
@@ -12,7 +17,7 @@ combined_model_auth_rep = pandas.DataFrame()
 for csv_file in csv_files:
                           df = pandas.read_csv(csv_file)
                           combined_model_auth_rep = pandas.concat([combined_model_auth_rep,df])
-print(combined_model_auth_rep)
+#print(combined_model_auth_rep)
 
 '''validating phase'''
 
@@ -72,10 +77,15 @@ def validation_df(df : pandas.DataFrame,
 
                                         return True, "DataFrame has passed all validations."
 
-is_valid, message = validation_df(model_config_df, n_cols=4, duplicates=True)
-print(is_valid, message)
 
+#is_valid_msg = validation_df(df = model_config_df,null_values=True)
+#print(is_valid_msg)
 
+'''Module 3'''
 
+joined_config_N_collateral = duckdb.query("select a.id,a.Opening_PD12,a.Opening_PDLT ,b.loan_amnt ,b.term from model_config_df a, model_collateral_df b where a.id = b.id")
+#print(joined_config_N_collateral)
 
+joined_collateral_N_authReop = duckdb.query("select a.id,a.loan_amnt ,a.term, b.PD12 , b.PDLT , b.EAD , b.LGD from model_collateral_df a , combined_model_auth_rep b where a.id = b.id")
+#print(joined_collateral_N_authReop)
 
