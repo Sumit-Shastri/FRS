@@ -84,15 +84,24 @@ def validation_df(df : pandas.DataFrame,
 
 '''Module 3'''
 
-joined_config_N_collateral = duckdb.query("select a.id,a.Opening_PD12,a.Opening_PDLT ,b.loan_amnt ,b.term from model_config_df a, model_collateral_df b where a.id = b.id")
-#print(joined_config_N_collateral)
+joined_config_N_collateral = duckdb.query("select a.id,a.Opening_PD12,a.Opening_PDLT ,b.loan_amnt ,b.term from model_config_df a, model_collateral_df b where a.id = b.id").df()
+print(joined_config_N_collateral)
 
-joined_collateral_N_authReop = duckdb.query("select a.id,a.loan_amnt ,a.term, b.PD12 , b.PDLT , b.EAD , b.LGD from model_collateral_df a , combined_model_auth_rep b where a.id = b.id")
-#print(joined_collateral_N_authReop)
+joined_collateral_N_authReop = duckdb.query("select a.id,a.loan_amnt ,a.term, b.PD12 , b.PDLT , b.EAD , b.LGD from model_collateral_df a , combined_model_auth_rep b where a.id = b.id").df()
+print(joined_collateral_N_authReop)
 
 stageCalculations = duckdb.query("SELECT id, EAD , PD12 , PDLT, LGD, EAD*PD12*LGD AS Stage_1 , EAD*PDLT*LGD AS Stage_2 , EAD*LGD AS Stage_3 from combined_model_auth_rep").df()
-#print(stageCalculations)
-
+print(stageCalculations)
+'''
 outputFile = "E:\\lending-club-data\\newStage.xlsx"
 stageCalculations.to_excel(outputFile,index = False , engine = "openpyxl")
 print(f"Excel file saved successfully as '{outputFile}'!")
+'''
+change_in_EAD = duckdb.query("SELECT id,(EAD-Previous_EAD) AS Change_In_EAD FROM combined_model_auth_rep").df()
+print(change_in_EAD)
+percent_change_in_EAD = duckdb.query("SELECT a.id,(a.Change_IN_Ead/b.Previous_EAD)*100 AS Change_in_Percentage FROM change_in_EAD a ,combined_model_auth_rep b WHERE a.id = b.id").df()
+print(percent_change_in_EAD)
+
+reportDataFrame = duckdb.query("SELECT a.id ,a.EAD , a.Previous_EAD , b.Change_In_EAD , c.Change_in_Percentage FROM combined_model_auth_rep a, change_in_EAD b ,percent_change_in_EAD c WHERE a.id = b.id and b.id = c.id")
+print(reportDataFrame)
+
