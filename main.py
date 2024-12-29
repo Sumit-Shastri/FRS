@@ -107,10 +107,27 @@ percent_change_in_EAD = duckdb.query("""SELECT a.id,(a.Change_IN_Ead/b."Previous
 #print(percent_change_in_EAD)
 
 reportDataFrame = duckdb.query("""SELECT a.id ,a.EAD , a."Previous EAD" , b.Change_In_EAD , c.Change_in_Percentage FROM combined_model_auth_rep a, change_in_EAD b ,percent_change_in_EAD c WHERE a.id = b.id and b.id = c.id LIMIT 100000""").df()
-print(reportDataFrame)
+#print(reportDataFrame)
 '''
 outputFile2 = "E:\\lending-club-data\\EAD_Report.xlsx"
 reportDataFrame.to_excel(outputFile2,index = False , engine = "openpyxl")
 print(f"Excel file saved successfully as '{outputFile2}'!")
 '''
-new = duckdb
+
+change_in_LGD = duckdb.query("""SELECT id , (LGD-"Previous LGD") AS change_in_LGD FROM combined_model_auth_rep""").df()
+#print(change_in_LGD)
+
+percentage_change_in_LGD = duckdb.query("""SELECT id , ((LGD-"Previous LGD")/"Previous LGD")*100 as percentage_change_in_LGD FROM combined_model_auth_rep""").df()
+#print(percentage_change_in_LGD)
+
+reportDataFrame3 = duckdb.query("""SELECT a.id , a.LGD , a."Previous LGD" , b.change_in_LGD , c.percentage_change_in_LGD 
+                                   FROM combined_model_auth_rep a, change_in_LGD b, percentage_change_in_LGD c
+                                   WHERE a.id = b.id AND b.id = c.id
+                                   LIMIT 100000""").df()
+print(reportDataFrame3)
+
+'''
+outputFile3 = "E:\\lending-club-data\\LGD_report.xlsx"
+reportDataFrame.to_excel(outputFile3,index = False , engine = "openpyxl")
+print(f"Excel file saved successfully as '{outputFile3}'!")
+'''
