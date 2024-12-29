@@ -106,8 +106,10 @@ change_in_EAD = duckdb.query("""SELECT id,(EAD-"Previous EAD") AS Change_In_EAD 
 percent_change_in_EAD = duckdb.query("""SELECT a.id,(a.Change_IN_Ead/b."Previous EAD")*100 AS Change_in_Percentage FROM change_in_EAD a ,combined_model_auth_rep b WHERE a.id = b.id""").df()
 #print(percent_change_in_EAD)
 
-reportDataFrame = duckdb.query("""SELECT a.id ,a.EAD , a."Previous EAD" , b.Change_In_EAD , c.Change_in_Percentage FROM combined_model_auth_rep a, change_in_EAD b ,percent_change_in_EAD c WHERE a.id = b.id and b.id = c.id""")
-#print(reportDataFrame)
-
-
-
+reportDataFrame = duckdb.query("""SELECT a.id ,a.EAD , a."Previous EAD" , b.Change_In_EAD , c.Change_in_Percentage FROM combined_model_auth_rep a, change_in_EAD b ,percent_change_in_EAD c WHERE a.id = b.id and b.id = c.id LIMIT 100000""").df()
+print(reportDataFrame)
+'''
+outputFile2 = "E:\\lending-club-data\\EAD_Report.xlsx"
+reportDataFrame.to_excel(outputFile2,index = False , engine = "openpyxl")
+print(f"Excel file saved successfully as '{outputFile2}'!")
+'''
