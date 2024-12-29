@@ -113,3 +113,4 @@ outputFile2 = "E:\\lending-club-data\\EAD_Report.xlsx"
 reportDataFrame.to_excel(outputFile2,index = False , engine = "openpyxl")
 print(f"Excel file saved successfully as '{outputFile2}'!")
 '''
+new = duckdb
