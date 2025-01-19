@@ -93,9 +93,8 @@ joined_collateral_N_authReop = duckdb.query("select a.id,a.loan_amnt ,a.term, b.
 
 stageCalculations = duckdb.query("SELECT id, EAD , PD12 , PDLT, LGD, EAD*PD12*LGD AS Stage_1 , EAD*PDLT*LGD AS Stage_2 , EAD*LGD AS Stage_3 from combined_model_auth_rep").df()
 #print(stageCalculations)
-
 '''
-outputFile = "E:\\newCal.xlsx"
+outputFile = "E:\\landu.xlsx"
 stageCalculations.to_excel(outputFile,index = False , engine = "openpyxl")
 print(f"Excel file saved successfully as '{outputFile}'!")
 '''
